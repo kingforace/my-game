@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Momos Mission 😈🥟</title>
 
-<link rel="stylesheet" href="style.css">
-
 <style>
-    body {
+    * {
         margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
         height: 100vh;
         display: flex;
         justify-content: center;
@@ -20,24 +25,27 @@
     }
 
     .container {
-        width: 400px;
-        padding: 40px;
+        width: 90%;
+        max-width: 400px;
+        padding: 30px;
         text-align: center;
         border-radius: 25px;
         background: rgba(255,255,255,0.12);
         backdrop-filter: blur(12px);
         box-shadow: 0 0 40px rgba(255,0,180,0.7);
+        animation: fadeIn 1s ease;
     }
 
     h1 {
-        margin-bottom: 8px;
-        font-size: 28px;
+        margin-bottom: 10px;
+        font-size: clamp(20px, 5vw, 28px);
         text-shadow: 0 0 12px hotpink;
     }
 
     p {
         opacity: 0.85;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
+        font-size: 14px;
     }
 
     .buttons {
@@ -46,13 +54,13 @@
     }
 
     button {
-        padding: 14px 34px;
+        padding: 12px 28px;
         border-radius: 40px;
         border: none;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         cursor: pointer;
-        user-select: none;
+        transition: 0.3s;
     }
 
     #yesBtn {
@@ -64,7 +72,11 @@
     }
 
     #yesBtn:hover {
-        transform: scale(1.08);
+        transform: scale(1.1);
+    }
+
+    #yesBtn:active {
+        transform: scale(0.95);
     }
 
     #noBtn {
@@ -79,8 +91,8 @@
     }
 
     .tease {
-        margin-top: 15px;
-        font-size: 14px;
+        margin-top: 12px;
+        font-size: 13px;
         opacity: 0.8;
     }
 
@@ -88,7 +100,7 @@
     .popup {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.65);
+        background: rgba(0,0,0,0.7);
         display: none;
         justify-content: center;
         align-items: center;
@@ -97,27 +109,26 @@
 
     .popup-content {
         background: linear-gradient(45deg, #ff4fd8, #6a00ff);
-        padding: 35px;
+        padding: 30px;
         border-radius: 25px;
-        font-size: 24px;
+        font-size: 20px;
         text-align: center;
         box-shadow: 0 0 45px hotpink;
-        animation: pop 0.35s ease;
-        width: 320px;
+        animation: pop 0.4s ease;
+        width: 85%;
+        max-width: 320px;
     }
 
     .popup-buttons {
-        margin-top: 25px;
+        margin-top: 20px;
         display: flex;
-        justify-content: space-between;
-        gap: 15px;
+        gap: 10px;
     }
 
     .popup-buttons button {
         flex: 1;
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 30px;
+        padding: 10px;
+        font-size: 14px;
     }
 
     .restart {
@@ -130,9 +141,15 @@
         color: #ff9ad5;
     }
 
+    /* Animations */
     @keyframes pop {
         from { transform: scale(0.6); opacity: 0; }
         to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .emoji {
@@ -145,6 +162,21 @@
         from { transform: translateY(0); opacity: 1; }
         to { transform: translateY(-140px); opacity: 0; }
     }
+
+    /* Floating background bubbles */
+    .bubble {
+        position: absolute;
+        bottom: -50px;
+        font-size: 20px;
+        animation: rise 6s linear infinite;
+        opacity: 0.6;
+    }
+
+    @keyframes rise {
+        from { transform: translateY(0); }
+        to { transform: translateY(-110vh); }
+    }
+
 </style>
 </head>
 
@@ -183,38 +215,19 @@
 
     const initialNoPos = { left: "50%", top: "70%" };
 
-    function getSafePosition() {
+    function moveNoButton() {
         const maxX = container.clientWidth - noBtn.offsetWidth;
         const maxY = container.clientHeight - noBtn.offsetHeight;
 
-        const yesRect = yesBtn.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
 
-        let x, y, safe = false;
-
-        while (!safe) {
-            x = Math.random() * maxX;
-            y = Math.random() * maxY;
-
-            const noRect = {
-                left: containerRect.left + x,
-                right: containerRect.left + x + noBtn.offsetWidth,
-                top: containerRect.top + y,
-                bottom: containerRect.top + y + noBtn.offsetHeight
-            };
-
-            const buffer = 25;
-
-            safe =
-                noRect.right < yesRect.left - buffer ||
-                noRect.left > yesRect.right + buffer ||
-                noRect.bottom < yesRect.top - buffer ||
-                noRect.top > yesRect.bottom + buffer;
-        }
-
-        return { x, y };
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+        noBtn.style.transform = "none";
     }
 
+    // Mouse (desktop)
     document.addEventListener("mousemove", (e) => {
         if (popup.style.display === "flex") return;
 
@@ -223,23 +236,24 @@
         const dy = e.clientY - (rect.top + rect.height / 2);
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 90) {
-            const pos = getSafePosition();
-            noBtn.style.left = pos.x + "px";
-            noBtn.style.top = pos.y + "px";
-            noBtn.style.transform = "none";
-        }
+        if (distance < 90) moveNoButton();
+    });
+
+    // Touch (mobile) 🔥
+    noBtn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        moveNoButton();
     });
 
     yesBtn.addEventListener("click", () => {
         popup.style.display = "flex";
 
-        for (let i = 0; i < 18; i++) {
+        for (let i = 0; i < 20; i++) {
             const e = document.createElement("div");
             e.className = "emoji";
             e.textContent = "🥟";
             e.style.left = Math.random() * window.innerWidth + "px";
-            e.style.top = "75%";
+            e.style.top = "80%";
             document.body.appendChild(e);
             setTimeout(() => e.remove(), 2000);
         }
@@ -252,10 +266,21 @@
         noBtn.style.transform = "translate(-50%, -50%)";
     }
 
-    restartBtn.addEventListener("click", resetGame);
-    closeBtn.addEventListener("click", resetGame);
+    restartBtn.onclick = resetGame;
+    closeBtn.onclick = resetGame;
+
+    // Background bubbles animation ✨
+    setInterval(() => {
+        const b = document.createElement("div");
+        b.className = "bubble";
+        b.textContent = "🥟";
+        b.style.left = Math.random() * window.innerWidth + "px";
+        document.body.appendChild(b);
+
+        setTimeout(() => b.remove(), 6000);
+    }, 800);
+
 </script>
 
-<script src="script.js"></script>
 </body>
 </html>
