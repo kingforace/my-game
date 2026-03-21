@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Momos Mission 😈🥟</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #ff3cac, #784ba0, #2b86c5);
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+        color: white;
+    }
+
+    .container {
+        width: 400px;
+        padding: 40px;
+        text-align: center;
+        border-radius: 25px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 0 40px rgba(255,0,180,0.7);
+    }
+
+    h1 {
+        margin-bottom: 8px;
+        font-size: 28px;
+        text-shadow: 0 0 12px hotpink;
+    }
+
+    p {
+        opacity: 0.85;
+        margin-bottom: 30px;
+    }
+
+    .buttons {
+        position: relative;
+        height: 180px;
+    }
+
+    button {
+        padding: 14px 34px;
+        border-radius: 40px;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    #yesBtn {
+        background: linear-gradient(45deg, #ff2f92, #ff7adf);
+        color: white;
+        box-shadow: 0 0 20px #ff5fd8;
+        position: relative;
+        z-index: 2;
+    }
+
+    #yesBtn:hover {
+        transform: scale(1.08);
+    }
+
+    #noBtn {
+        position: absolute;
+        background: #111;
+        color: #ff9ad5;
+        box-shadow: 0 0 15px #ff5fd8;
+        left: 50%;
+        top: 70%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+
+    .tease {
+        margin-top: 15px;
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
+    /* POPUP */
+    .popup {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+
+    .popup-content {
+        background: linear-gradient(45deg, #ff4fd8, #6a00ff);
+        padding: 35px;
+        border-radius: 25px;
+        font-size: 24px;
+        text-align: center;
+        box-shadow: 0 0 45px hotpink;
+        animation: pop 0.35s ease;
+        width: 320px;
+    }
+
+    .popup-buttons {
+        margin-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .popup-buttons button {
+        flex: 1;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 30px;
+    }
+
+    .restart {
+        background: #fff;
+        color: #6a00ff;
+    }
+
+    .close {
+        background: #000;
+        color: #ff9ad5;
+    }
+
+    @keyframes pop {
+        from { transform: scale(0.6); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    .emoji {
+        position: absolute;
+        font-size: 26px;
+        animation: floatUp 2s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(-140px); opacity: 0; }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🥟 Momos khane chale?</h1>
+    <p>No option is just an illusion 😌</p>
+
+    <div class="buttons">
+        <button id="yesBtn">YES 😋</button>
+        <button id="noBtn">NO 😏</button>
+    </div>
+
+    <div class="tease">👀 Try clicking NO… carefully</div>
+</div>
+
+<div class="popup" id="popup">
+    <div class="popup-content">
+        😂 OR KOI OPTION BHI NAHI THA 😂<br><br>🥟🥟🥟
+
+        <div class="popup-buttons">
+            <button class="restart" id="restartBtn">Restart 🔄</button>
+            <button class="close" id="closeBtn">Close ❌</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const popup = document.getElementById("popup");
+    const container = document.querySelector(".buttons");
+    const restartBtn = document.getElementById("restartBtn");
+    const closeBtn = document.getElementById("closeBtn");
+
+    const initialNoPos = { left: "50%", top: "70%" };
+
+    function getSafePosition() {
+        const maxX = container.clientWidth - noBtn.offsetWidth;
+        const maxY = container.clientHeight - noBtn.offsetHeight;
+
+        const yesRect = yesBtn.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+
+        let x, y, safe = false;
+
+        while (!safe) {
+            x = Math.random() * maxX;
+            y = Math.random() * maxY;
+
+            const noRect = {
+                left: containerRect.left + x,
+                right: containerRect.left + x + noBtn.offsetWidth,
+                top: containerRect.top + y,
+                bottom: containerRect.top + y + noBtn.offsetHeight
+            };
+
+            const buffer = 25;
+
+            safe =
+                noRect.right < yesRect.left - buffer ||
+                noRect.left > yesRect.right + buffer ||
+                noRect.bottom < yesRect.top - buffer ||
+                noRect.top > yesRect.bottom + buffer;
+        }
+
+        return { x, y };
+    }
+
+    document.addEventListener("mousemove", (e) => {
+        if (popup.style.display === "flex") return;
+
+        const rect = noBtn.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 90) {
+            const pos = getSafePosition();
+            noBtn.style.left = pos.x + "px";
+            noBtn.style.top = pos.y + "px";
+            noBtn.style.transform = "none";
+        }
+    });
+
+    yesBtn.addEventListener("click", () => {
+        popup.style.display = "flex";
+
+        for (let i = 0; i < 18; i++) {
+            const e = document.createElement("div");
+            e.className = "emoji";
+            e.textContent = "🥟";
+            e.style.left = Math.random() * window.innerWidth + "px";
+            e.style.top = "75%";
+            document.body.appendChild(e);
+            setTimeout(() => e.remove(), 2000);
+        }
+    });
+
+    function resetGame() {
+        popup.style.display = "none";
+        noBtn.style.left = initialNoPos.left;
+        noBtn.style.top = initialNoPos.top;
+        noBtn.style.transform = "translate(-50%, -50%)";
+    }
+
+    restartBtn.addEventListener("click", resetGame);
+    closeBtn.addEventListener("click", resetGame);
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
