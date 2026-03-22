@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Momos Mission 😈🥟</title>
 
 <style>
@@ -18,7 +17,6 @@ background:linear-gradient(135deg,#ff3cac,#784ba0,#2b86c5);
 font-family:sans-serif;
 overflow:hidden;
 color:white;
-transition:0.2s;
 }
 
 .container{
@@ -30,11 +28,7 @@ border-radius:25px;
 background:rgba(255,255,255,0.12);
 backdrop-filter:blur(12px);
 box-shadow:0 0 40px rgba(255,0,180,0.7);
-animation:fadeIn 1s ease;
 }
-
-h1{font-size:clamp(20px,5vw,28px);margin-bottom:10px;}
-p{margin-bottom:20px;}
 
 .buttons{position:relative;height:180px;}
 
@@ -44,13 +38,11 @@ border-radius:30px;
 border:none;
 font-size:16px;
 cursor:pointer;
-transition:0.2s;
 }
 
 #yesBtn{
-background:linear-gradient(45deg,#ff2f92,#ff7adf);
+background:#ff2f92;
 color:white;
-box-shadow:0 0 20px #ff5fd8;
 }
 
 #noBtn{
@@ -72,29 +64,19 @@ align-items:center;
 }
 
 .popup-content{
-background:linear-gradient(45deg,#ff4fd8,#6a00ff);
+background:#6a00ff;
 padding:25px;
 border-radius:20px;
 text-align:center;
-animation:pop 0.4s;
-width:85%;
-max-width:320px;
+width:80%;
 }
 
-@keyframes pop{
-from{transform:scale(0.6);}
-to{transform:scale(1);}
-}
-
-.shake{
-animation:shake 0.3s;
-}
-
+.shake{animation:shake 0.3s;}
 @keyframes shake{
 0%{transform:translateX(0);}
-25%{transform:translateX(-5px);}
-50%{transform:translateX(5px);}
-75%{transform:translateX(-5px);}
+25%{transform:translateX(-6px);}
+50%{transform:translateX(6px);}
+75%{transform:translateX(-6px);}
 100%{transform:translateX(0);}
 }
 
@@ -103,11 +85,9 @@ position:absolute;
 font-size:24px;
 animation:float 2s forwards;
 }
-
 @keyframes float{
 to{transform:translateY(-150px);opacity:0;}
 }
-
 </style>
 </head>
 
@@ -115,9 +95,9 @@ to{transform:translateY(-150px);opacity:0;}
 
 <div class="container" id="box">
 <h1 id="title">🥟 Momos khane chale?</h1>
-<p id="msg">No option is just an illusion 😌</p>
+<p>No option is just an illusion 😌</p>
 
-<div class="buttons">
+<div class="buttons" id="area">
 <button id="yesBtn">YES 😋</button>
 <button id="noBtn">NO 😏</button>
 </div>
@@ -132,10 +112,12 @@ to{transform:translateY(-150px);opacity:0;}
 </div>
 </div>
 
-<audio id="clickSound" src="https://www.myinstants.com/media/sounds/mouse-click.mp3"></audio>
+<!-- SOUND -->
+<audio id="sound" src="https://www.myinstants.com/media/sounds/mouse-click.mp3"></audio>
 
 <script>
 let attempts=0;
+let activated=false;
 
 const noBtn=document.getElementById("noBtn");
 const yesBtn=document.getElementById("yesBtn");
@@ -143,8 +125,9 @@ const popup=document.getElementById("popup");
 const popupText=document.getElementById("popupText");
 const title=document.getElementById("title");
 const counter=document.getElementById("counter");
-const clickSound=document.getElementById("clickSound");
+const sound=document.getElementById("sound");
 const box=document.getElementById("box");
+const area=document.getElementById("area");
 
 const messages=[
 "You can’t escape momos 😈",
@@ -153,35 +136,46 @@ const messages=[
 "Accept your fate 🥟"
 ];
 
-function moveNo(){
+// unlock sound on first click
+document.body.addEventListener("click",()=>{
+activated=true;
+},{once:true});
+
+function moveNo(e){
 attempts++;
 counter.innerText="Attempts: "+attempts;
-
 title.innerText="It’s useless 😈";
 
-const x=Math.random()*250;
-const y=Math.random()*120;
+// stronger movement (full area)
+const maxX=area.clientWidth - noBtn.offsetWidth;
+const maxY=area.clientHeight - noBtn.offsetHeight;
+
+const x=Math.random()*maxX;
+const y=Math.random()*maxY;
 
 noBtn.style.left=x+"px";
 noBtn.style.top=y+"px";
 noBtn.style.transform="none";
 
-clickSound.play();
+// play sound only after interaction
+if(activated) sound.play();
 
 // vibration
-if(navigator.vibrate) navigator.vibrate(100);
+if(navigator.vibrate) navigator.vibrate(80);
 
-// shake effect
+// shake
 box.classList.add("shake");
 setTimeout(()=>box.classList.remove("shake"),300);
 
-// fake click trick
-if(Math.random()<0.1){
+// 25% fake catch 😈
+if(Math.random()<0.25){
 showPopup();
 }
 }
 
-noBtn.addEventListener("mouseover",moveNo);
+// 🔥 MAIN FIX: move on ANY attempt
+noBtn.addEventListener("mouseenter",moveNo);
+noBtn.addEventListener("mousemove",moveNo);
 noBtn.addEventListener("touchstart",(e)=>{
 e.preventDefault();
 moveNo();
@@ -191,7 +185,7 @@ yesBtn.addEventListener("click",()=>{
 showPopup();
 
 // confetti
-for(let i=0;i<25;i++){
+for(let i=0;i<30;i++){
 let e=document.createElement("div");
 e.className="emoji";
 e.innerText="🥟";
