@@ -7,279 +7,205 @@
 <title>Momos Mission 😈🥟</title>
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+*{margin:0;padding:0;box-sizing:border-box;}
 
-    body {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #ff3cac, #784ba0, #2b86c5);
-        font-family: 'Poppins', sans-serif;
-        overflow: hidden;
-        color: white;
-    }
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#ff3cac,#784ba0,#2b86c5);
+font-family:sans-serif;
+overflow:hidden;
+color:white;
+transition:0.2s;
+}
 
-    .container {
-        width: 90%;
-        max-width: 400px;
-        padding: 30px;
-        text-align: center;
-        border-radius: 25px;
-        background: rgba(255,255,255,0.12);
-        backdrop-filter: blur(12px);
-        box-shadow: 0 0 40px rgba(255,0,180,0.7);
-        animation: fadeIn 1s ease;
-    }
+.container{
+width:90%;
+max-width:400px;
+padding:30px;
+text-align:center;
+border-radius:25px;
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(12px);
+box-shadow:0 0 40px rgba(255,0,180,0.7);
+animation:fadeIn 1s ease;
+}
 
-    h1 {
-        margin-bottom: 10px;
-        font-size: clamp(20px, 5vw, 28px);
-        text-shadow: 0 0 12px hotpink;
-    }
+h1{font-size:clamp(20px,5vw,28px);margin-bottom:10px;}
+p{margin-bottom:20px;}
 
-    p {
-        opacity: 0.85;
-        margin-bottom: 25px;
-        font-size: 14px;
-    }
+.buttons{position:relative;height:180px;}
 
-    .buttons {
-        position: relative;
-        height: 180px;
-    }
+button{
+padding:12px 25px;
+border-radius:30px;
+border:none;
+font-size:16px;
+cursor:pointer;
+transition:0.2s;
+}
 
-    button {
-        padding: 12px 28px;
-        border-radius: 40px;
-        border: none;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+#yesBtn{
+background:linear-gradient(45deg,#ff2f92,#ff7adf);
+color:white;
+box-shadow:0 0 20px #ff5fd8;
+}
 
-    #yesBtn {
-        background: linear-gradient(45deg, #ff2f92, #ff7adf);
-        color: white;
-        box-shadow: 0 0 20px #ff5fd8;
-        position: relative;
-        z-index: 2;
-    }
+#noBtn{
+position:absolute;
+background:#111;
+color:#ff9ad5;
+left:50%;
+top:70%;
+transform:translate(-50%,-50%);
+}
 
-    #yesBtn:hover {
-        transform: scale(1.1);
-    }
+.popup{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.7);
+display:none;
+justify-content:center;
+align-items:center;
+}
 
-    #yesBtn:active {
-        transform: scale(0.95);
-    }
+.popup-content{
+background:linear-gradient(45deg,#ff4fd8,#6a00ff);
+padding:25px;
+border-radius:20px;
+text-align:center;
+animation:pop 0.4s;
+width:85%;
+max-width:320px;
+}
 
-    #noBtn {
-        position: absolute;
-        background: #111;
-        color: #ff9ad5;
-        box-shadow: 0 0 15px #ff5fd8;
-        left: 50%;
-        top: 70%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-    }
+@keyframes pop{
+from{transform:scale(0.6);}
+to{transform:scale(1);}
+}
 
-    .tease {
-        margin-top: 12px;
-        font-size: 13px;
-        opacity: 0.8;
-    }
+.shake{
+animation:shake 0.3s;
+}
 
-    /* POPUP */
-    .popup {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.7);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-    }
+@keyframes shake{
+0%{transform:translateX(0);}
+25%{transform:translateX(-5px);}
+50%{transform:translateX(5px);}
+75%{transform:translateX(-5px);}
+100%{transform:translateX(0);}
+}
 
-    .popup-content {
-        background: linear-gradient(45deg, #ff4fd8, #6a00ff);
-        padding: 30px;
-        border-radius: 25px;
-        font-size: 20px;
-        text-align: center;
-        box-shadow: 0 0 45px hotpink;
-        animation: pop 0.4s ease;
-        width: 85%;
-        max-width: 320px;
-    }
+.emoji{
+position:absolute;
+font-size:24px;
+animation:float 2s forwards;
+}
 
-    .popup-buttons {
-        margin-top: 20px;
-        display: flex;
-        gap: 10px;
-    }
-
-    .popup-buttons button {
-        flex: 1;
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .restart {
-        background: #fff;
-        color: #6a00ff;
-    }
-
-    .close {
-        background: #000;
-        color: #ff9ad5;
-    }
-
-    /* Animations */
-    @keyframes pop {
-        from { transform: scale(0.6); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .emoji {
-        position: absolute;
-        font-size: 26px;
-        animation: floatUp 2s ease-out forwards;
-    }
-
-    @keyframes floatUp {
-        from { transform: translateY(0); opacity: 1; }
-        to { transform: translateY(-140px); opacity: 0; }
-    }
-
-    /* Floating background bubbles */
-    .bubble {
-        position: absolute;
-        bottom: -50px;
-        font-size: 20px;
-        animation: rise 6s linear infinite;
-        opacity: 0.6;
-    }
-
-    @keyframes rise {
-        from { transform: translateY(0); }
-        to { transform: translateY(-110vh); }
-    }
+@keyframes float{
+to{transform:translateY(-150px);opacity:0;}
+}
 
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>🥟 Momos khane chale?</h1>
-    <p>No option is just an illusion 😌</p>
+<div class="container" id="box">
+<h1 id="title">🥟 Momos khane chale?</h1>
+<p id="msg">No option is just an illusion 😌</p>
 
-    <div class="buttons">
-        <button id="yesBtn">YES 😋</button>
-        <button id="noBtn">NO 😏</button>
-    </div>
+<div class="buttons">
+<button id="yesBtn">YES 😋</button>
+<button id="noBtn">NO 😏</button>
+</div>
 
-    <div class="tease">👀 Try clicking NO… carefully</div>
+<p id="counter">Attempts: 0</p>
 </div>
 
 <div class="popup" id="popup">
-    <div class="popup-content">
-        😂 OR KOI OPTION BHI NAHI THA 😂<br><br>🥟🥟🥟
-
-        <div class="popup-buttons">
-            <button class="restart" id="restartBtn">Restart 🔄</button>
-            <button class="close" id="closeBtn">Close ❌</button>
-        </div>
-    </div>
+<div class="popup-content">
+<p id="popupText"></p>
+<button onclick="location.reload()">Restart 🔄</button>
+</div>
 </div>
 
+<audio id="clickSound" src="https://www.myinstants.com/media/sounds/mouse-click.mp3"></audio>
+
 <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const popup = document.getElementById("popup");
-    const container = document.querySelector(".buttons");
-    const restartBtn = document.getElementById("restartBtn");
-    const closeBtn = document.getElementById("closeBtn");
+let attempts=0;
 
-    const initialNoPos = { left: "50%", top: "70%" };
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+const popup=document.getElementById("popup");
+const popupText=document.getElementById("popupText");
+const title=document.getElementById("title");
+const counter=document.getElementById("counter");
+const clickSound=document.getElementById("clickSound");
+const box=document.getElementById("box");
 
-    function moveNoButton() {
-        const maxX = container.clientWidth - noBtn.offsetWidth;
-        const maxY = container.clientHeight - noBtn.offsetHeight;
+const messages=[
+"You can’t escape momos 😈",
+"Told you already 😎",
+"Game over bro 😂",
+"Accept your fate 🥟"
+];
 
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
+function moveNo(){
+attempts++;
+counter.innerText="Attempts: "+attempts;
 
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
-        noBtn.style.transform = "none";
-    }
+title.innerText="It’s useless 😈";
 
-    // Mouse (desktop)
-    document.addEventListener("mousemove", (e) => {
-        if (popup.style.display === "flex") return;
+const x=Math.random()*250;
+const y=Math.random()*120;
 
-        const rect = noBtn.getBoundingClientRect();
-        const dx = e.clientX - (rect.left + rect.width / 2);
-        const dy = e.clientY - (rect.top + rect.height / 2);
-        const distance = Math.sqrt(dx * dx + dy * dy);
+noBtn.style.left=x+"px";
+noBtn.style.top=y+"px";
+noBtn.style.transform="none";
 
-        if (distance < 90) moveNoButton();
-    });
+clickSound.play();
 
-    // Touch (mobile) 🔥
-    noBtn.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        moveNoButton();
-    });
+// vibration
+if(navigator.vibrate) navigator.vibrate(100);
 
-    yesBtn.addEventListener("click", () => {
-        popup.style.display = "flex";
+// shake effect
+box.classList.add("shake");
+setTimeout(()=>box.classList.remove("shake"),300);
 
-        for (let i = 0; i < 20; i++) {
-            const e = document.createElement("div");
-            e.className = "emoji";
-            e.textContent = "🥟";
-            e.style.left = Math.random() * window.innerWidth + "px";
-            e.style.top = "80%";
-            document.body.appendChild(e);
-            setTimeout(() => e.remove(), 2000);
-        }
-    });
+// fake click trick
+if(Math.random()<0.1){
+showPopup();
+}
+}
 
-    function resetGame() {
-        popup.style.display = "none";
-        noBtn.style.left = initialNoPos.left;
-        noBtn.style.top = initialNoPos.top;
-        noBtn.style.transform = "translate(-50%, -50%)";
-    }
+noBtn.addEventListener("mouseover",moveNo);
+noBtn.addEventListener("touchstart",(e)=>{
+e.preventDefault();
+moveNo();
+});
 
-    restartBtn.onclick = resetGame;
-    closeBtn.onclick = resetGame;
+yesBtn.addEventListener("click",()=>{
+showPopup();
 
-    // Background bubbles animation ✨
-    setInterval(() => {
-        const b = document.createElement("div");
-        b.className = "bubble";
-        b.textContent = "🥟";
-        b.style.left = Math.random() * window.innerWidth + "px";
-        document.body.appendChild(b);
+// confetti
+for(let i=0;i<25;i++){
+let e=document.createElement("div");
+e.className="emoji";
+e.innerText="🥟";
+e.style.left=Math.random()*window.innerWidth+"px";
+e.style.top="80%";
+document.body.appendChild(e);
+setTimeout(()=>e.remove(),2000);
+}
+});
 
-        setTimeout(() => b.remove(), 6000);
-    }, 800);
-
+function showPopup(){
+popup.style.display="flex";
+popupText.innerText=messages[Math.floor(Math.random()*messages.length)];
+}
 </script>
 
 </body>
